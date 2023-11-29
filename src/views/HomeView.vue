@@ -8,6 +8,26 @@
         placeholder="Search For a city or state"
         class="py-2 px-1 w-full bg-transparent border-b border-white focus:outline-none focus:border-cyan-500 focus:shadow-md"
       />
+      <ul
+        v-if="mapboxResults"
+        class="absoulute bg-cyan-500 text-white w-full shadow-md py-2 px-1 top[-66px]"
+      >
+        <p v-if="searchError" class="py-2 text-white">
+          Sorry, something went wrong, please try again.
+        </p>
+        <p v-if="!searchError && mapboxResults.length === 0">
+          No results match your query, try a different term.
+        </p>
+        <template v-else>
+          <li
+            class="cursor-pointer py-2 px-1 hover:shadow-md"
+            v-for="city in mapboxResults"
+            :key="city.id"
+          >
+            {{ city.place_name }}
+          </li>
+        </template>
+      </ul>
     </div>
   </main>
 </template>
@@ -20,15 +40,20 @@ const apiKey =
 const searchQuery = ref("");
 const queryTimeout = ref(null);
 const mapboxResults = ref(null);
+const searchError = ref(null);
 
 const getSearchResults = () => {
   clearTimeout(queryTimeout);
   queryTimeout.value = setTimeout(async () => {
     if (searchQuery.value !== "") {
-      const result = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${apiKey}&types=place`
-      );
-      mapboxResults.value = result.data.features;
+      try {
+        const result = await axios.get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${apiKey}&types=place`
+        );
+        mapboxResults.value = result.data.features;
+      } catch (error) {
+        searchError.value = true;
+      }
       console.log(mapboxResults.value);
       return;
     }
