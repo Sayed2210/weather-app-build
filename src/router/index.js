@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import CityView from "../views/CityView.vue";
 
 const routes = [
   {
@@ -9,6 +10,11 @@ const routes = [
     meta: {
       title: "Weather App",
     },
+  },
+  {
+    path: "/weather/:city/:state",
+    name: "cityView",
+    component: CityView,
   },
 ];
 

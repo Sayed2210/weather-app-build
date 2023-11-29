@@ -23,6 +23,7 @@
             class="cursor-pointer py-2 px-1 hover:shadow-md"
             v-for="city in mapboxResults"
             :key="city.id"
+            @click="cityPreview(city)"
           >
             {{ city.place_name }}
           </li>
@@ -35,13 +36,35 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+// api key
 const apiKey =
   "pk.eyJ1Ijoic2Fpa284NSIsImEiOiJjbHBoY3RieWEwOWgwMnFwMGFoNjRlbHhqIn0.xKEp3xi0P0UNmX8ZzQwA_A";
+//search keyword
 const searchQuery = ref("");
 const queryTimeout = ref(null);
+//data that we get from api
 const mapboxResults = ref(null);
+//handle error
 const searchError = ref(null);
 
+const router = useRouter();
+
+//city preivew fun to make dynamic route and handle data from searched data
+const cityPreview = (city) => {
+  console.log(city);
+  const [cityName, state] = city.place_name.split(",");
+  router.push({
+    name: "cityView",
+    params: { state: state.trim(), city: cityName },
+    query: {
+      lat: city.geometry.coordinates[1],
+      lng: city.geometry.coordinates[0],
+    },
+  });
+};
+
+//get data from api
 const getSearchResults = () => {
   clearTimeout(queryTimeout);
   queryTimeout.value = setTimeout(async () => {
@@ -58,7 +81,6 @@ const getSearchResults = () => {
       return;
     }
     mapboxResults.value = null;
-    console.log(mapboxResults.value);
   }, 300);
 };
 </script>
