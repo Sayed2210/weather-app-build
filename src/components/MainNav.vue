@@ -14,6 +14,8 @@
           />
           <font-awesome-icon
             :icon="['fas', 'plus']"
+            @click="addCity()"
+            v-if="route.query.preview"
             class="text-xl hover:text-cyan-500 duration-150 cursor-pointer text-white bg-cyan-900 p-2 rounded-full w-3.5 h-3.5"
           />
         </div>
@@ -55,8 +57,36 @@
 
 <script setup>
 import BaseModel from "./BaseModel.vue";
+import { uid } from "uid";
 import { ref } from "vue";
+import { useRoute, useRouter, RouterLink } from "vue-router";
+const route = useRoute();
+const router = useRouter();
 const showModel = ref(null);
+
+const savedCities = ref([]);
+const addCity = () => {
+  if (localStorage.getItem("savedCities")) {
+    savedCities.value = JSON.parse(localStorage.getItem("savedCities"));
+  }
+  const locationObj = {
+    id: uid(),
+    state: route.params.state,
+    city: route.params.city,
+    coords: {
+      lat: route.query.lat,
+      lng: route.query.lng,
+    },
+  };
+  //set dat to localstorage
+  savedCities.value.push(locationObj);
+  localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+  //reset all queries
+  let query = Object.assign({}, route.query);
+  delete query.preview;
+  router.replace({ query });
+};
+
 const toggleModel = () => {
   showModel.value = !showModel.value;
 };
