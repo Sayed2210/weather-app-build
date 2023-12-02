@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-cyan-500 shadow-lg sticky top-0">
+  <header class="bg-cyan-500 shadow-lg sticky top-0 px-2 md:px-0">
     <div class="container mx-auto">
       <nav class="flex items-center justify-between py-5">
         <router-link :to="{ name: 'home' }" class="text-2xl text-white"

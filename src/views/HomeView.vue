@@ -60,6 +60,7 @@ const cityPreview = (city) => {
     query: {
       lat: city.geometry.coordinates[1],
       lng: city.geometry.coordinates[0],
+      preview: true,
     },
   });
 };

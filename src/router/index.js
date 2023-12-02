@@ -15,6 +15,9 @@ const routes = [
     path: "/weather/:city/:state",
     name: "cityView",
     component: CityView,
+    meta: {
+      title: "Weather App",
+    },
   },
 ];
 
