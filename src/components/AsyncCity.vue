@@ -97,10 +97,22 @@
         </div>
       </div>
     </div>
+    <!-- remove city -->
+    <div
+      @click="removeCity()"
+      class="del flex items-center hover:text-red-700 text-white cursor-pointer"
+    >
+      <font-awesome-icon
+        :icon="['fas', 'trash']"
+        class="text-xl duration-150 bg-cyan-900 p-2 rounded-full w-3.5 h-3.5"
+      />
+      <p>Remove City</p>
+    </div>
   </div>
 </template>
 
 <script setup>
+import router from "@/router";
 import axios from "axios";
 import { useRoute } from "vue-router";
 
@@ -121,13 +133,23 @@ const getWeatherData = async () => {
       const utc = hour.dt * 1000 + localOffset;
       hour.currentTime = utc + 1000 * weatherData.data.timezone_offset;
     });
+    await new Promise((res) => setTimeout(res, 800));
     return weatherData.data;
   } catch (err) {
     console.log(err);
   }
 };
 const weatherData = await getWeatherData();
-console.log(weatherData);
+
+//remove city from localstorage
+const removeCity = () => {
+  const cities = JSON.parse(localStorage.getItem("savedCities"));
+  const updatedCities = cities.filter((city) => city.id !== route.query.id);
+  localStorage.setItem("savedCities", JSON.stringify(updatedCities));
+  router.push({
+    name: "home",
+  });
+};
 </script>
 
 <style lang="scss" scoped></style>

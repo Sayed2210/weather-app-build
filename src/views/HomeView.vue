@@ -29,11 +29,19 @@
           </li>
         </template>
       </ul>
+      <Suspense class="mt-3"
+        ><CityList />
+        <template #fallback>
+          <CityCardSkeleton />
+        </template>
+      </Suspense>
     </div>
   </main>
 </template>
 
 <script setup>
+import CityList from "@/components/CityList.vue";
+import CityCardSkeleton from "@/components/CityCardSkeleton.vue";
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
